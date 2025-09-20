@@ -2,6 +2,7 @@ package com.tarzan.MoneyTracker.controller;
 
 import com.tarzan.MoneyTracker.entity.Account;
 import com.tarzan.MoneyTracker.service.AccountService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -38,7 +39,16 @@ public class AccountController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found");
         }
+    }
 
+    @PutMapping("accounts/{id}")
+    public Account updateaccount(@PathVariable("id") Long id, @RequestBody Account account){
+        try {
+            return accountService.updateAccount(id, account);
+        }
+        catch (EntityNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found");
+        }
     }
 
 }

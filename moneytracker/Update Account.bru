@@ -1,0 +1,18 @@
+meta {
+  name: Update Account
+  type: http
+  seq: 1
+}
+
+put {
+  url: http://localhost:8080/accounts/{id}
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "accountBalance": 2345.00,
+    "accountName": "TD Chequing"
+  }
+}

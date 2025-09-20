@@ -2,10 +2,12 @@ package com.tarzan.MoneyTracker.service;
 
 import com.tarzan.MoneyTracker.entity.Account;
 import com.tarzan.MoneyTracker.repository.AccountRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -37,8 +39,27 @@ public class AccountServiceImpl implements AccountService{
         } else {
             return false;
         }
-
     }
 
+    @Override
+    public Account updateAccount(long id, Account account) {
+        Account accountDb= accountRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("No account found"));
 
+        if(Objects.nonNull(account.getAccountName()) && !"".equalsIgnoreCase(account.getAccountName())){
+            accountDb.setAccountName(account.getAccountName());
+        }
+
+        if(Objects.nonNull(account.getAccountBalance())){
+            accountDb.setAccountBalance(account.getAccountBalance());
+        }
+
+        accountRepository.save(accountDb);
+        return accountDb;
+    }
+
+    @Override
+    public Account fetchAccountByName(String accountName) {
+        return accountRepository.findByAccountNameIgnoreCase(accountName);
+    }
 }

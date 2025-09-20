@@ -2,6 +2,11 @@ package com.tarzan.MoneyTracker.controller;
 
 import com.tarzan.MoneyTracker.entity.Account;
 import com.tarzan.MoneyTracker.service.AccountService;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,13 +19,18 @@ public class AccountController {
     @Autowired
     private AccountService accountService;
 
+    private final Logger LOGGER = LoggerFactory.getLogger(AccountController.class);
+
     @PostMapping("/accounts")
-    public Account createAccount(@RequestBody Account account) {
+
+    public Account createAccount(@Valid @RequestBody Account account) {
+        LOGGER.info("Inside save createAccount of AccountController {}", account);
         return accountService.createAccount(account);
     }
 
     @GetMapping("/accounts")
     public List<Account> fetchAccounts() {
+        LOGGER.info("Inside save fetchAccountsList of AccountController");
         return accountService.fetchAccounts();
     }
 
@@ -38,7 +48,19 @@ public class AccountController {
         } else {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found");
         }
-
     }
 
+    @PutMapping("accounts/{id}")
+    public Account updateAccount(@PathVariable("id") Long id, @RequestBody Account account){
+        try {
+            return accountService.updateAccount(id, account);
+        }
+        catch (EntityNotFoundException ex) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found");
+        }
+    }
+    @GetMapping("accounts/name/{name}")
+    public Account fetchDataByName(@PathVariable("name") String accountName){
+            return accountService.fetchAccountByName(accountName);
+    }
 }

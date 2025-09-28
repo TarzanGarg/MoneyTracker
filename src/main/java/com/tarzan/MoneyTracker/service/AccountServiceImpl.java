@@ -2,7 +2,6 @@ package com.tarzan.MoneyTracker.service;
 
 import com.tarzan.MoneyTracker.entity.Account;
 import com.tarzan.MoneyTracker.repository.AccountRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +10,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class AccountServiceImpl implements AccountService{
+public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private AccountRepository accountRepository;
@@ -42,19 +41,18 @@ public class AccountServiceImpl implements AccountService{
     }
 
     @Override
-    public Account updateAccount(long id, Account account) {
-        Account accountDb= accountRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("No account found"));
+    public Optional<Account> updateAccount(long id, Account account) {
+        Optional<Account> accountDb = accountRepository.findById(id);
 
-        if(Objects.nonNull(account.getAccountName()) && !"".equalsIgnoreCase(account.getAccountName())){
-            accountDb.setAccountName(account.getAccountName());
+        if (Objects.nonNull(account.getAccountName()) && !"".equalsIgnoreCase(account.getAccountName())) {
+            accountDb.get().setAccountName(account.getAccountName());
         }
 
-        if(Objects.nonNull(account.getAccountBalance())){
-            accountDb.setAccountBalance(account.getAccountBalance());
+        if (Objects.nonNull(account.getAccountBalance())) {
+            accountDb.get().setAccountBalance(account.getAccountBalance());
         }
 
-        accountRepository.save(accountDb);
+        accountRepository.save(accountDb.get());
         return accountDb;
     }
 

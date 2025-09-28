@@ -16,7 +16,7 @@ public interface AccountService {
 
     boolean deleteByIdIfExists(Long id);
 
-    public Account updateAccount(long id,Account account);
+    public Optional<Account> updateAccount(long id, Account account);
 
     public Account fetchAccountByName(String accountName);
 }

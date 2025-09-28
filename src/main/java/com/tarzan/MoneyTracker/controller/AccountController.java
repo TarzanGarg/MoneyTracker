@@ -51,16 +51,13 @@ public class AccountController {
     }
 
     @PutMapping("accounts/{id}")
-    public Account updateAccount(@PathVariable("id") Long id, @RequestBody Account account){
-        try {
-            return accountService.updateAccount(id, account);
-        }
-        catch (EntityNotFoundException ex) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found");
-        }
+    public Account updateAccount(@PathVariable("id") Long id, @RequestBody Account account) {
+        return accountService.updateAccount(id, account)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Account with id " + id + " not found"));
     }
+
     @GetMapping("accounts/name/{name}")
-    public Account fetchDataByName(@PathVariable("name") String accountName){
-            return accountService.fetchAccountByName(accountName);
+    public Account fetchDataByName(@PathVariable("name") String accountName) {
+        return accountService.fetchAccountByName(accountName);
     }
 }
